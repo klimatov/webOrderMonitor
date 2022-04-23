@@ -33,14 +33,14 @@ class BotMessage {
 
     fun inworkMessage(webOrder: WebOrder?): TextSourcesList {
         val resultMessage = buildEntities {
-            codeln("⭕\uD83D\uDEE0Собираем ${timeDiff(webOrder?.docDate)} минут!")
+            codeln("⭕\uD83D\uDEE0Собираем ${minutesEnding(timeDiff(webOrder?.docDate))}!")
         }.plus(orderMessage(webOrder))
         return resultMessage
     }
 
     fun completeMessage(webOrder: WebOrder?): TextSourcesList {
         val resultMessage = buildEntities {
-            boldln("✅Подтверждена за ${timeDiff(webOrder?.docDate)} минут!")
+            boldln("✅Подтверждена за ${minutesEnding(timeDiff(webOrder?.docDate))}!")
         }.plus(italic(orderMessage(webOrder)))
         return resultMessage
     }
@@ -50,5 +50,19 @@ class BotMessage {
         val docDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         val docDateFormatting = LocalDateTime.parse(docDate, docDateFormat)
         return docDateFormatting.until(lateDate, ChronoUnit.MINUTES)
+    }
+
+    fun minutesEnding(minute: Long): String {
+        return "${minute} " + minute.let {
+            if (it % 100 in 11..14) {
+                "минут"
+            } else {
+                when ((it % 10).toInt()) {
+                    1 -> "минуту"
+                    2, 3, 4 -> "минуты"
+                    else -> "минут"//0, 5, 6, 7, 8, 9
+                }
+            }
+        }
     }
 }
