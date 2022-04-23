@@ -33,15 +33,43 @@ object TGbot {
     }
 
     suspend fun botSendMessage(webOrder: WebOrder?): MessageIdentifier {
-        return bot.sendMessage(targetChatId, msgConvert.inworkMessage(webOrder), disableWebPagePreview = true).messageId
+        try {
+            return bot.sendMessage(
+                targetChatId,
+                msgConvert.inworkMessage(webOrder),
+                disableWebPagePreview = true
+            ).messageId
+        } catch (e: Exception) {
+            println(e.message)
+            return 0
+        }
     }
 
-    suspend fun botEditMessage(webOrder: WebOrder?) {
-        bot.editMessageText(
-            targetChatId,
-            webOrder?.messageId ?: 0,
-            msgConvert.completeMessage(webOrder),
-            disableWebPagePreview = true
-        )
+    suspend fun botConfirmMessage(webOrder: WebOrder?) {
+        try {
+            bot.editMessageText(
+                targetChatId,
+                webOrder?.messageId ?: 0,
+                msgConvert.completeMessage(webOrder),
+                disableWebPagePreview = true
+            )
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
+    suspend fun botTimerUpdate(webOrder: WebOrder?) {
+        try {
+            if (webOrder?.activeTime != msgConvert.timeDiff(webOrder?.docDate)) {
+                bot.editMessageText(
+                    targetChatId,
+                    webOrder?.messageId ?: 0,
+                    msgConvert.inworkMessage(webOrder),
+                    disableWebPagePreview = true
+                )
+            }
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 }

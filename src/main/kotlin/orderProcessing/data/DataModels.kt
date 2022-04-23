@@ -1,6 +1,5 @@
 package orderProcessing.data
 import com.google.gson.annotations.SerializedName
-import dev.inmo.tgbotapi.types.MessageIdentifier
 
 data class Auth(
     @SerializedName("result") var result: String? = null,
@@ -96,6 +95,7 @@ data class WebOrder(
     @SerializedName("docStatus") var docStatus: String? = null,
     @SerializedName("webNum") var webNum: String? = null,
     @SerializedName("messageId") var messageId: Long? = null, // manual
+    @SerializedName("activeTime") var activeTime: Long? = null, // manual
     @SerializedName("items") var items: List<Items> = emptyList() //manual
 )
 
