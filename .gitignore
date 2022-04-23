@@ -1,1 +1,5 @@
 /.gradle/
+/.idea/
+/build/
+/src/main/kotlin/myTest.kt
+
