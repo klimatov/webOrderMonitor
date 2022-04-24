@@ -17,7 +17,7 @@ import orderProcessing.data.WebOrder
 
 object TGbot {
     private val botToken: String = SecurityData.TELEGRAM_BOT_TOKEN
-    private val targetChatId = ChatId(SecurityData.TELEGRAM_CHAT_ID)
+    val targetChatId = ChatId(SecurityData.TELEGRAM_CHAT_ID)
     val bot = telegramBot(botToken)
     val msgConvert = BotMessage()
 
@@ -65,7 +65,8 @@ object TGbot {
                     targetChatId,
                     webOrder?.messageId ?: 0,
                     msgConvert.inworkMessage(webOrder),
-                    disableWebPagePreview = true
+                    disableWebPagePreview = true,
+                    replyMarkup = if (webOrder?.messageId == TGInfoMessage.currentInfoMsgId) TGInfoMessage.currentInfoMsg else null
                 )
             }
         } catch (e: Exception) {

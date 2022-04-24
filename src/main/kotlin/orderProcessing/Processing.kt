@@ -1,5 +1,6 @@
 package orderProcessing
 
+import bot.TGInfoMessage
 import bot.TGbot
 import dev.inmo.tgbotapi.types.MessageIdentifier
 import orderProcessing.data.WebOrder
@@ -36,13 +37,18 @@ class Processing() {
             }
             if (deleteFlag) delOrderList.add(activeOrder.key.toString())//delOrder(activeOrder.key)
         }
-        // удаляем подтвержденные
+        // удаляем подтвержденные вебки
         delOrderList.forEach {
             delOrder(it)
         }
+
+        // обновляем инфокнопку
+        TGInfoMessage.notConfirmedOrders = activeOrders.count()
+        TGInfoMessage.updateInfoMsg()
     }
     suspend fun newOrder(webNum: String?) {
         val messageId: MessageIdentifier = TGbot.botSendMessage(activeOrders[webNum])
+        TGInfoMessage.newInfoMsgId = messageId // messageID последнего сообщения для инфокнопки
         activeOrders[webNum]?.messageId = messageId
     }
 

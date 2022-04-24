@@ -63,7 +63,7 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return 0
         }
     }
 
@@ -83,11 +83,11 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return 0
         }
     }
 
-    fun localRemains(id: String?): List<RemainsLocal>? {
+    fun localRemains(id: String?): List<RemainsLocal> {
         try {
             val response = RetrofitInstance.eldoApi.localRemains(
                 shop,
@@ -101,11 +101,11 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return emptyList()
         }
     }
 
-    fun localStorage(): List<LocalStorageDtos>? {
+    fun localStorage(): List<LocalStorageDtos> {
         try {
             val response = RetrofitInstance.eldoApi.localStorage(
                 shop,
@@ -118,11 +118,11 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return emptyList()
         }
     }
 
-    fun mainRemains(jsonArray: JsonArray?): List<RemainsLocal>? {
+    fun mainRemains(jsonArray: JsonArray?): List<RemainsLocal> {
         val hashMap = hashMapOf("goodCodeList" to jsonArray)
         try {
             val response = RetrofitInstance.eldoApi.mainRemains(
@@ -137,12 +137,12 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return emptyList()
         }
     }
 
-    fun getWebOrderListSimple(selection: String): List<WebOrderSimply>? {
-        var str = when (selection) {
+    fun getWebOrderListSimple(selection: String): List<WebOrderSimply> {
+        val str = when (selection) {
             "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT"
             else -> "WRQST_CRTD"
         }
@@ -167,12 +167,12 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return emptyList()
         }
     }
 
     fun getWebOrderList(selection: String, webNum: String?): ListWebOrder? {
-        var str = when (selection) {
+        val str = when (selection) {
             "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT"
             else -> "WRQST_CRTD"
         }
@@ -194,14 +194,14 @@ class NetClient {
                 dbVersion,
                 gmt,
                 token,
-                hashMap as HashMap<Any?, Any?>
+                hashMap
             )?.execute()
             val responseJson = Gson().fromJson(response?.body(), ListWebOrder::class.java)
             return responseJson
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return ListWebOrder()
         }
     }
 
@@ -220,7 +220,7 @@ class NetClient {
         } catch (e: Exception) {
             println(e.message)
             this.error = e.message.toString()
-            return null
+            return WebOrderDetail()
         }
     }
 }

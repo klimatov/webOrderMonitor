@@ -1,5 +1,6 @@
 package orderProcessing
 
+import bot.TGInfoMessage
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.TextSourcesList
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.italic
@@ -12,9 +13,9 @@ class BotMessage {
 
     fun orderMessage(webOrder: WebOrder?): TextSourcesList {
         val resultMessage = buildEntities {
-            regularln("#️⃣№${webOrder?.webNum}/${webOrder?.orderId}")
+            regularln("#️⃣${webOrder?.webNum}/${webOrder?.orderId}")
             regular("${webOrder?.ordType} ")
-            if (webOrder?.isLegalEntity=="Y") bold("СЧЁТ КОНТРАГЕНТА")
+            if (webOrder?.isLegalEntity == "Y") bold("СЧЁТ КОНТРАГЕНТА")
             underlineln("\n\uD83D\uDCC6${webOrder?.docDate}")
             regularln("${if (webOrder?.paid == "Y") "\uD83D\uDCB0Онлайн оплата" else "\uD83E\uDDFEНе оплачен"} \uD83D\uDCB5${webOrder?.docSum} руб.")
             regular("\uD83D\uDC68${webOrder?.fioCustomer} ")
@@ -46,8 +47,8 @@ class BotMessage {
         return resultMessage
     }
 
-    fun timeDiff (docDate: String?, lateDate: LocalDateTime = LocalDateTime.now()): Long {
-        if (docDate==null) return 0
+    fun timeDiff(docDate: String?, lateDate: LocalDateTime = LocalDateTime.now()): Long {
+        if (docDate == null) return 0
         val docDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         val docDateFormatting = LocalDateTime.parse(docDate, docDateFormat)
         return docDateFormatting.until(lateDate, ChronoUnit.MINUTES)
@@ -65,5 +66,27 @@ class BotMessage {
                 }
             }
         }
+    }
+
+    fun orderEnding(order: Int): String {
+        return "${order} " + order.let {
+            if (it % 100 in 11..14) {
+                "заявок"
+            } else {
+                when ((it % 10)) {
+                    1 -> "заявка"
+                    2, 3, 4 -> "заявки"
+                    else -> "заявок"//0, 5, 6, 7, 8, 9
+                }
+            }
+        }
+    }
+
+    fun infoMessage(): String {
+        val resTxt: String
+        if (TGInfoMessage.notConfirmedOrders == 0) {
+            resTxt = "✅ Все заявки подтверждены"
+        } else { resTxt = "⭕\uD83D\uDEE0 В подборе ${orderEnding(TGInfoMessage.notConfirmedOrders)}"}
+        return resTxt
     }
 }
