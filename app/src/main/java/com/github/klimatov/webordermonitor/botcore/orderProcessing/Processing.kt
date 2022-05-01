@@ -2,14 +2,18 @@ package orderProcessing
 
 import bot.TGInfoMessage
 import bot.TGbot
+import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import dev.inmo.tgbotapi.types.MessageIdentifier
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import orderProcessing.data.WebOrder
 import orderProcessing.data.WebOrderSimply
 
 class Processing() {
     var activeOrders: MutableMap<String?, WebOrder?> = mutableMapOf() //иниц. список активных вебок
 
-    suspend fun processInworkOrders(inworkOrderList: List<WebOrderSimply>) {
+    suspend fun processInworkOrders(inworkOrderList: List<WebOrderSimply>, binding: ActivityMainBinding) {
+
         // проверка, появились ли новые вебки, отсутствующие в списке активных?
         inworkOrderList.forEach { webOrder ->
             if (!activeOrders.containsKey(webOrder.webNum)) {
@@ -44,7 +48,9 @@ class Processing() {
 
         // обновляем инфокнопку
         TGInfoMessage.notConfirmedOrders = activeOrders.count()
-        TGInfoMessage.updateInfoMsg()
+        TGInfoMessage.updateInfoMsg(binding)
+
+
     }
     suspend fun newOrder(webNum: String?) {
         val messageId: MessageIdentifier = TGbot.botSendMessage(activeOrders[webNum])

@@ -1,9 +1,8 @@
 package orderProcessing
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.github.klimatov.webordermonitor.MainActivity
+import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
+import kotlinx.coroutines.*
 import orderProcessing.data.Items
 import orderProcessing.data.RemainsLocal
 import orderProcessing.data.SecurityData
@@ -18,7 +17,10 @@ object OrderDaemon {
     val netClient = NetClient()
     private val processing = Processing()
 
-    suspend fun orderDaemonStart() {
+    suspend fun orderDaemonStart(binding: ActivityMainBinding) {
+        withContext(Dispatchers.Main) {
+            binding.textProcess.text = "Запускаем..."
+        }
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             if (netClient.login(login, password, werk)) {
@@ -31,11 +33,17 @@ object OrderDaemon {
 
         scope.launch {
             while (true) {  // основной цикл проверки
+                withContext(Dispatchers.Main) {
+                    binding.textProcess.text = "Обновляем данные..."
+                }
+
                 val orderList = netClient.getWebOrderListSimple("new") //all or new  --- получаем список неподтвержденных
                 if (orderList != null) {
-                    processing.processInworkOrders(orderList)   // --- обрабатываем список неподтвержденных вебок
+                    processing.processInworkOrders(orderList, binding)   // --- обрабатываем список неподтвержденных вебок
                 }
-                println("tick")
+                withContext(Dispatchers.Main) {
+                    binding.textProcess.text = "Ждем следующего обновления..."
+                }
                 delay(30000L)
             }
         }.join()

@@ -5,6 +5,7 @@ import com.google.gson.JsonArray
 import orderProcessing.data.*
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -14,9 +15,11 @@ class NetClient {
     private var shop = ""
     lateinit var userInfo: UserInfo
     var error = ""
-    val dbVersion = "15"
-    var timeZone = TimeZone.getTimeZone("GMT+07:00")
-    val gmt = timeZone.rawOffset.toString()
+    val dbVersion = "16"
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
+    val gmt = SimpleDateFormat("Z").format(calendar.time)
+//    var timeZone = TimeZone.getTimeZone("GMT+07:00")
+//    val gmt = timeZone.rawOffset.toString()
 
     //хэшилка пароля для запроса
     fun md5Hash(str: String): String {

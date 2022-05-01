@@ -1,4 +1,5 @@
 package orderProcessing.data
+
 import com.google.gson.annotations.SerializedName
 
 data class Auth(
@@ -87,8 +88,13 @@ data class WebOrder(
     @SerializedName("fioCustomer") var fioCustomer: String? = null,
     @SerializedName("paid") var paid: String? = null,
     @SerializedName("phone") var phone: String? = null,
+    @SerializedName("isRepeated") var isRepeated: String? = null, //new 01.05.2022
+    @SerializedName("docVers") var docVers: String? = null, //new 01.05.2022
+    @SerializedName("isPassportNeeded") var isPassportNeeded: String? = null, //new 01.05.2022
+    @SerializedName("isBonusCardUsed") var isBonusCardUsed: String? = null, //new 01.05.2022
     @SerializedName("orderType") var orderType: String? = null,
     @SerializedName("reasonCode") var reasonCode: String? = null,
+    @SerializedName("creationPlace") var creationPlace: String? = null, //new 01.05.2022
     @SerializedName("collector") var collector: Collector? = Collector(),
     @SerializedName("docDate") var docDate: String? = null,
     @SerializedName("docSum") var docSum: Int? = null,
@@ -96,13 +102,20 @@ data class WebOrder(
     @SerializedName("webNum") var webNum: String? = null,
     @SerializedName("messageId") var messageId: Long? = null, // manual
     @SerializedName("activeTime") var activeTime: Long? = null, // manual
-    @SerializedName("items") var items: List<Items> = emptyList() //manual
+    @SerializedName("items") var items: List<Items> = emptyList(), //manual
+    @SerializedName("status") var status: Status? = Status() //new 01.05.2022
 )
 
 data class WebOrderDetail(
     @SerializedName("webOrder") var webOrder: WebOrder? = WebOrder(),
     @SerializedName("needUpdate") var needUpdate: Boolean? = null,
-    @SerializedName("items") var items: List<Items> = emptyList()
+    @SerializedName("items") var items: List<Items> = emptyList(),
+    @SerializedName("validate") var validate: Validate? = Validate() //new 01.05.2022
+)
+
+data class Validate( //new 01.05.2022
+    @SerializedName("validate") var validate: String? = null,
+    @SerializedName("message") var message: String? = null
 )
 
 data class Items(
@@ -118,16 +131,24 @@ data class Items(
     @SerializedName("itemId") var itemId: Int? = null,
     @SerializedName("parentiTemNo") var parentiTemNo: String? = null,
     @SerializedName("shelf") var shelf: String? = null,
-    @SerializedName("params") var params:List<Params>  = emptyList(),
+    @SerializedName("params") var params: List<Params> = emptyList(),
     @SerializedName("incomplet") var incomplet: String? = null,
-    @SerializedName("remains") var remains: List<RemainsLocal>  = emptyList()//manual
+    @SerializedName("remains") var remains: List<RemainsLocal> = emptyList()//manual
 )
 
-data class Params (
-    @SerializedName("ogItemId"    ) var ogItemId    : Int?    = null,
-    @SerializedName("fieldValue"  ) var fieldValue  : String? = null,
-    @SerializedName("fieldDdescr" ) var fieldDdescr : String? = null,
-    @SerializedName("fieldMask"   ) var fieldMask   : String? = null,
-    @SerializedName("fieldNeeded" ) var fieldNeeded : String? = null,
-    @SerializedName("fieldName"   ) var fieldName   : String? = null
+data class Params(
+    @SerializedName("ogItemId") var ogItemId: Int? = null,
+    @SerializedName("fieldValue") var fieldValue: String? = null,
+    @SerializedName("fieldDdescr") var fieldDdescr: String? = null,
+    @SerializedName("fieldMask") var fieldMask: String? = null,
+    @SerializedName("fieldNeeded") var fieldNeeded: String? = null,
+    @SerializedName("fieldName") var fieldName: String? = null
+)
+
+data class Status(
+
+    @SerializedName("title") var title: String? = null,
+    @SerializedName("description") var description: String? = null,
+    @SerializedName("rgb") var rgb: String? = null
+
 )

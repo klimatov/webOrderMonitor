@@ -29,9 +29,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.0'
+
 
     implementation ("dev.inmo:tgbotapi:0.38.11")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")

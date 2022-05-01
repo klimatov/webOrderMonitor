@@ -1,11 +1,14 @@
 package bot
 
+import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import dev.inmo.tgbotapi.extensions.api.edit.ReplyMarkup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.utils.extensions.raw.reply_markup
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.row
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object TGInfoMessage {
     var currentInfoMsgId: Long? = null
@@ -14,7 +17,7 @@ object TGInfoMessage {
     var notConfirmedOrders: Int = 0  //активных не подтвержденных
     var dayConfirmedCount: Int = 0  //подтверждено за день
 
-    suspend fun updateInfoMsg() {
+    suspend fun updateInfoMsg(binding: ActivityMainBinding) {
         if (newInfoMsgId != null) {
 
             if (currentInfoMsgId != newInfoMsgId) {
@@ -22,9 +25,15 @@ object TGInfoMessage {
                 currentInfoMsgId = newInfoMsgId
             }
 
+            val updMsg = TGbot.msgConvert.infoMessage()
+
+            withContext(Dispatchers.Main) {
+                binding.textOrderCount.text = updMsg
+            }
+
             val infoMsg = inlineKeyboard {
                 row {
-                    dataButton(TGbot.msgConvert.infoMessage(), " ")
+                    dataButton(updMsg, " ")
                 }
             }
 
