@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val sharedPreferences = getSharedPreferences("webOrderMonitor", 0)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -24,10 +26,9 @@ class MainActivity : AppCompatActivity() {
 
         AndroidThreeTen.init(this)
 
-
         CoroutineScope(Dispatchers.IO).launch {
             TGbot.botDaemonStart()
-            OrderDaemon.orderDaemonStart(binding)
+            OrderDaemon.orderDaemonStart(binding, sharedPreferences)
         }.start()
     }
 }

@@ -1,5 +1,6 @@
 package bot
 
+import android.util.Log
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
 import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
@@ -28,7 +29,7 @@ object TGbot {
             onCommand("status") {
                 sendTextMessage(it.chat, "Bot online")
             }
-            println("Bot started! ${getMe()}")
+            Log.i("webOrderMonitor", "Bot started: ${getMe()}")
         }.start()
     }
 
@@ -40,7 +41,7 @@ object TGbot {
                 disableWebPagePreview = true
             ).messageId
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             return 0
         }
     }
@@ -54,7 +55,7 @@ object TGbot {
                 disableWebPagePreview = true
             )
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
         }
     }
 
@@ -70,7 +71,7 @@ object TGbot {
                 )
             }
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
         }
     }
 }

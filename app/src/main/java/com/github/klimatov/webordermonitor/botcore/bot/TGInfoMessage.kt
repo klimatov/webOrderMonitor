@@ -1,5 +1,6 @@
 package bot
 
+import android.util.Log
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import dev.inmo.tgbotapi.extensions.api.edit.ReplyMarkup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.utils.extensions.raw.reply_markup
@@ -45,7 +46,7 @@ object TGInfoMessage {
                         replyMarkup = infoMsg
                     ).reply_markup
                 } catch (e: Exception) {
-                    println(e.message)
+                    Log.e("webOrderMonitor", "Exception: ${e.message}")
                 }
             }
         }
@@ -55,7 +56,7 @@ object TGInfoMessage {
         try {
             TGbot.bot.editMessageReplyMarkup(TGbot.targetChatId, currentInfoMsgId!!, replyMarkup = null)
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
         }
     }
 }

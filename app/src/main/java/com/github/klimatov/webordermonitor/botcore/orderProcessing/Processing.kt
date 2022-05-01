@@ -1,19 +1,26 @@
 package orderProcessing
 
+
+import android.content.SharedPreferences
+import android.util.Log
 import bot.TGInfoMessage
 import bot.TGbot
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
+import com.google.gson.Gson
 import dev.inmo.tgbotapi.types.MessageIdentifier
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import orderProcessing.data.WebOrder
 import orderProcessing.data.WebOrderSimply
 
-class Processing() {
+
+class Processing {
     var activeOrders: MutableMap<String?, WebOrder?> = mutableMapOf() //иниц. список активных вебок
 
-    suspend fun processInworkOrders(inworkOrderList: List<WebOrderSimply>, binding: ActivityMainBinding) {
-
+    suspend fun processInworkOrders(
+        inworkOrderList: List<WebOrderSimply>,
+        binding: ActivityMainBinding,
+        sharedPreferences: SharedPreferences
+    ) {
+        var newFlag = false
         // проверка, появились ли новые вебки, отсутствующие в списке активных?
         inworkOrderList.forEach { webOrder ->
             if (!activeOrders.containsKey(webOrder.webNum)) {
@@ -24,11 +31,15 @@ class Processing() {
                 activeOrders[webOrder.webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару
                     items.remains = OrderDaemon.getRemains(items.goodCode)
                 }
-                activeOrders[webOrder.webNum]?.activeTime = TGbot.msgConvert.timeDiff(webOrder.docDate) // время активности
+                activeOrders[webOrder.webNum]?.activeTime =
+                    TGbot.msgConvert.timeDiff(webOrder.docDate) // время активности
                 newOrder(webOrder.webNum)
+                newFlag = true
             }
         }
-        println(activeOrders)
+        var msg = ""
+        activeOrders.forEach { msg += " ${it.key}, ${it.value?.docDate} |" }
+        Log.i("webOrderMonitor", "Active orders: (${activeOrders.count()} pc.) $msg")
 
         // проверка, исчезли (подтверждены) ли ранее сохраненные вебки?
         // +обновляем таймера в сообщениях активных вебок
@@ -50,8 +61,15 @@ class Processing() {
         TGInfoMessage.notConfirmedOrders = activeOrders.count()
         TGInfoMessage.updateInfoMsg(binding)
 
+        // записываем активные в SharedPerferences если были изменения +-
+        if (newFlag || delOrderList.count() > 0) {
+            val serializedActiveOrders = Gson().toJson(activeOrders)
+            sharedPreferences.edit().putString("ACTIVE_ORDERS", serializedActiveOrders).apply()
 
+            Log.i("webOrderMonitor", "sharedPreferences SAVE: $serializedActiveOrders")
+        }
     }
+
     suspend fun newOrder(webNum: String?) {
         val messageId: MessageIdentifier = TGbot.botSendMessage(activeOrders[webNum])
         TGInfoMessage.newInfoMsgId = messageId // messageID последнего сообщения для инфокнопки
@@ -63,9 +81,10 @@ class Processing() {
         activeOrders.remove(webNum)
     }
 
-    suspend fun updateOrderTimer(webNum: String?){
+    suspend fun updateOrderTimer(webNum: String?) {
         TGbot.botTimerUpdate(activeOrders[webNum])
-        activeOrders[webNum]?.activeTime = TGbot.msgConvert.timeDiff(activeOrders[webNum]?.docDate) // время активности
+        activeOrders[webNum]?.activeTime =
+            TGbot.msgConvert.timeDiff(activeOrders[webNum]?.docDate) // время активности
     }
 
 

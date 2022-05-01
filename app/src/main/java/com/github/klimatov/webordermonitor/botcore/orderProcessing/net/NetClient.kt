@@ -1,5 +1,6 @@
 package orderProcessing.net
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import orderProcessing.data.*
@@ -15,8 +16,8 @@ class NetClient {
     private var shop = ""
     lateinit var userInfo: UserInfo
     var error = ""
-    val dbVersion = "16"
-    val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
+    private val dbVersion = "16"
+    private val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
     val gmt = SimpleDateFormat("Z").format(calendar.time)
 //    var timeZone = TimeZone.getTimeZone("GMT+07:00")
 //    val gmt = timeZone.rawOffset.toString()
@@ -52,7 +53,7 @@ class NetClient {
                 return false
             }
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return false
         }
@@ -64,7 +65,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), DbVersion::class.java)
             return responseJson.version!!
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return 0
         }
@@ -84,7 +85,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), OrderCount::class.java)
             return responseJson.quantity!!
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return 0
         }
@@ -102,7 +103,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), Remains::class.java)
             return responseJson.remainsLocal
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return emptyList()
         }
@@ -119,7 +120,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), Storage::class.java)
             return responseJson.localStorageDtos
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return emptyList()
         }
@@ -138,7 +139,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), mainRemains::class.java)
             return responseJson.remains
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return emptyList()
         }
@@ -168,7 +169,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), ListWebOrderSimply::class.java)
             return responseJson.webOrderSimply
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return emptyList()
         }
@@ -202,7 +203,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), ListWebOrder::class.java)
             return responseJson
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return ListWebOrder()
         }
@@ -221,7 +222,7 @@ class NetClient {
             val responseJson = Gson().fromJson(response?.body(), WebOrderDetail::class.java)
             return responseJson
         } catch (e: Exception) {
-            println(e.message)
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
             return WebOrderDetail()
         }
