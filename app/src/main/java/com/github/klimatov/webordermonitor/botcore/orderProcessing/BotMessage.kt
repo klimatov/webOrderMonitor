@@ -4,6 +4,8 @@ import bot.TGInfoMessage
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.TextSourcesList
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.italic
+import orderProcessing.data.SecurityData.SHOP_CLOSING
+import orderProcessing.data.SecurityData.SHOP_OPENING
 import orderProcessing.data.WebOrder
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -65,6 +67,10 @@ class BotMessage {
         return formatter.format(time)
     }
 
+    fun shopInWork(time: LocalTime = LocalTime.now()): Boolean {
+        return time.hour in SHOP_OPENING until SHOP_CLOSING
+    }
+
     fun minutesEnding(minute: Long): String {
         return "${minute} " + minute.let {
             if (it % 100 in 11..14) {
@@ -102,5 +108,13 @@ class BotMessage {
                 "⭕\uD83D\uDEE0 В подборе ${orderEnding(TGInfoMessage.notConfirmedOrders)} ${timeNow()}"
         }
         return resTxt
+    }
+
+    fun notificationMessage(notification: Boolean): String {
+        if (notification) {
+            return "\uD83D\uDD08 Магазин открыт, включаем уведомления!"
+        } else {
+            return "\uD83D\uDD07 Магазин закрыт, отключаем уведомления!"
+        }
     }
 }

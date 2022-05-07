@@ -21,6 +21,7 @@ object TGbot {
     val targetChatId = ChatId(SecurityData.TELEGRAM_CHAT_ID)
     val bot = telegramBot(botToken)
     val msgConvert = BotMessage()
+    var msgNotification = true
 
     suspend fun botDaemonStart() {
         val scope = CoroutineScope(Dispatchers.IO)
@@ -33,16 +34,17 @@ object TGbot {
         }.start()
     }
 
-    suspend fun botSendMessage(webOrder: WebOrder?): MessageIdentifier {
+    suspend fun botSendMessage(webOrder: WebOrder?): Long? {
         try {
             return bot.sendMessage(
                 targetChatId,
                 msgConvert.inworkMessage(webOrder),
-                disableWebPagePreview = true
+                disableWebPagePreview = true,
+                disableNotification = !msgNotification
             ).messageId
         } catch (e: Exception) {
             Log.e("webOrderMonitor", "Exception: ${e.message}")
-            return 0
+            return TGInfoMessage.currentInfoMsgId ?: 0
         }
     }
 
@@ -70,6 +72,19 @@ object TGbot {
                     replyMarkup = if (webOrder?.messageId == TGInfoMessage.currentInfoMsgId) TGInfoMessage.currentInfoMsg else null
                 )
             }
+        } catch (e: Exception) {
+            Log.e("webOrderMonitor", "Exception: ${e.message}")
+        }
+    }
+
+    suspend fun botSendInfoMessage() {
+        try {
+            bot.sendMessage(
+                targetChatId,
+                msgConvert.notificationMessage(msgNotification),
+                disableWebPagePreview = true,
+                disableNotification = !msgNotification
+            ).messageId
         } catch (e: Exception) {
             Log.e("webOrderMonitor", "Exception: ${e.message}")
         }

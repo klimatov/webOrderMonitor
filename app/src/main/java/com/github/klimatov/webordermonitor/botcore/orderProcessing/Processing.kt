@@ -76,7 +76,7 @@ class Processing {
     }
 
     suspend fun newOrder(webNum: String?) {
-        val messageId: MessageIdentifier = TGbot.botSendMessage(activeOrders[webNum])
+        val messageId: Long? = TGbot.botSendMessage(activeOrders[webNum])
         TGInfoMessage.newInfoMsgId = messageId // messageID последнего сообщения для инфокнопки
         activeOrders[webNum]?.messageId = messageId
     }

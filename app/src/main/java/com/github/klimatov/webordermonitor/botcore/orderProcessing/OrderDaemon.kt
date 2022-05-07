@@ -3,6 +3,7 @@ package orderProcessing
 import android.content.SharedPreferences
 import android.util.Log
 import bot.TGInfoMessage
+import bot.TGbot
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -63,6 +64,13 @@ object OrderDaemon {
                     binding.textProcess.text = "Обновляем данные..."
                 }
 
+                // проверяем открыт ли магазин и триггерим звук уведомлений
+                if (TGbot.msgConvert.shopInWork()!=TGbot.msgNotification) {
+                    TGbot.msgNotification = !TGbot.msgNotification
+                    TGbot.botSendInfoMessage()
+                }
+                Log.d("webOrderMonitor", "Shop open: ${TGbot.msgConvert.shopInWork()}")
+
                 val orderList =
                     netClient.getWebOrderListSimple("new") //all or new  --- получаем список неподтвержденных
 
@@ -76,6 +84,7 @@ object OrderDaemon {
                     binding.textError.text = "Код ответа сервера: ${netClient.errorCode.toString()}"
                     binding.textProcess.text = "Ждем следующего обновления..."
                 }
+
                 Log.i("webOrderMonitor", "Wait next iteration 30 second")
                 delay(30000L)
             }
