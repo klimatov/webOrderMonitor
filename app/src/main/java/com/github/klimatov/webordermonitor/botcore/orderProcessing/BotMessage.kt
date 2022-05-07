@@ -6,8 +6,11 @@ import dev.inmo.tgbotapi.types.MessageEntity.textsources.TextSourcesList
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.italic
 import orderProcessing.data.WebOrder
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
+import java.util.*
+
 //import java.time.LocalDateTime
 //import java.time.format.DateTimeFormatter
 //import java.time.temporal.ChronoUnit
@@ -57,6 +60,11 @@ class BotMessage {
         return docDateFormatting.until(lateDate, ChronoUnit.MINUTES)
     }
 
+    fun timeNow(time: LocalTime = LocalTime.now()): String {
+        val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.US)
+        return formatter.format(time)
+    }
+
     fun minutesEnding(minute: Long): String {
         return "${minute} " + minute.let {
             if (it % 100 in 11..14) {
@@ -88,8 +96,11 @@ class BotMessage {
     fun infoMessage(): String {
         val resTxt: String
         if (TGInfoMessage.notConfirmedOrders == 0) {
-            resTxt = "✅ Все заявки подтверждены"
-        } else { resTxt = "⭕\uD83D\uDEE0 В подборе ${orderEnding(TGInfoMessage.notConfirmedOrders)}"}
+            resTxt = "✅ Все заявки подтверждены ${timeNow()}"
+        } else {
+            resTxt =
+                "⭕\uD83D\uDEE0 В подборе ${orderEnding(TGInfoMessage.notConfirmedOrders)} ${timeNow()}"
+        }
         return resTxt
     }
 }

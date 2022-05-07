@@ -2,6 +2,7 @@ package com.github.klimatov.webordermonitor
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import bot.TGbot
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -9,6 +10,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import orderProcessing.OrderDaemon
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
 

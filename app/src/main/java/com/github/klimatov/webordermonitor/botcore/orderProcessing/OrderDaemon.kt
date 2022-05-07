@@ -6,6 +6,7 @@ import bot.TGInfoMessage
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import kotlinx.coroutines.*
 import orderProcessing.data.Items
 import orderProcessing.data.RemainsLocal
@@ -32,19 +33,27 @@ object OrderDaemon {
 
         // считываем данные из SharedPerferences
         val serializedActiveOrders = sharedPreferences.getString("ACTIVE_ORDERS", null)
-
         if (serializedActiveOrders != null) {
             val type = object : TypeToken<MutableMap<String?, WebOrder?>>() {}.type
             processing.activeOrders =
                 Gson().fromJson(serializedActiveOrders, type)
-
             Log.i("webOrderMonitor", "sharedPreferences READ: $serializedActiveOrders")
 
-            val maxVal = emptyList<Long>().toMutableList()
-            processing.activeOrders.forEach { maxVal.add(it.value?.messageId!!) }
-            TGInfoMessage.newInfoMsgId =
-                maxVal.maxOrNull()// messageID последнего сообщения для инфокнопки
+//            val maxVal = emptyList<Long>().toMutableList()
+//            processing.activeOrders.forEach { maxVal.add(it.value?.messageId!!) }
+//            TGInfoMessage.newInfoMsgId =
+//                maxVal.maxOrNull()// messageID последнего сообщения для инфокнопки
         }
+
+        val serializedCurrentInfoMsgId = sharedPreferences.getString("CURRENT_INFO_MESSAGE_ID", null)
+        if (serializedCurrentInfoMsgId != null) {
+            val type = object : TypeToken<Long?>() {}.type
+            TGInfoMessage.currentInfoMsgId =
+                Gson().fromJson(serializedCurrentInfoMsgId, type)
+            TGInfoMessage.newInfoMsgId = TGInfoMessage.currentInfoMsgId
+            Log.i("webOrderMonitor", "sharedPreferences READ: $serializedCurrentInfoMsgId")
+        }
+
         val scope = CoroutineScope(Dispatchers.IO)
 
         scope.launch {

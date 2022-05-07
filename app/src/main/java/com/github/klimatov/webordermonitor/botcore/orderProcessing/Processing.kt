@@ -65,8 +65,13 @@ class Processing {
         if (newFlag || delOrderList.count() > 0) {
             val serializedActiveOrders = Gson().toJson(activeOrders)
             sharedPreferences.edit().putString("ACTIVE_ORDERS", serializedActiveOrders).apply()
-
-            Log.i("webOrderMonitor", "sharedPreferences SAVE: $serializedActiveOrders")
+            val serializedCurrentInfoMsgId = Gson().toJson(TGInfoMessage.currentInfoMsgId)
+            sharedPreferences.edit()
+                .putString("CURRENT_INFO_MESSAGE_ID", serializedCurrentInfoMsgId).apply()
+            Log.i(
+                "webOrderMonitor",
+                "sharedPreferences SAVE: $serializedActiveOrders $serializedCurrentInfoMsgId"
+            )
         }
     }
 
