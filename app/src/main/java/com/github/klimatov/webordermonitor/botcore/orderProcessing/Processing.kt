@@ -26,6 +26,7 @@ class Processing {
             if (!activeOrders.containsKey(webOrder.webNum)) {
                 activeOrders[webOrder.webNum] =
                     OrderDaemon.getOrderList(webOrder.webNum)[0]// добавляем новую вебку в список активных
+                TGbot.dayConfirmedCount++ // увеличиваем на 1 счетчик собранных за день
                 activeOrders[webOrder.webNum]?.items =
                     OrderDaemon.getItems(activeOrders[webOrder.webNum]?.orderId) // обновляем список товара (items)
                 activeOrders[webOrder.webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару
@@ -65,13 +66,16 @@ class Processing {
         if (newFlag || delOrderList.count() > 0) {
             val serializedActiveOrders = Gson().toJson(activeOrders)
             sharedPreferences.edit().putString("ACTIVE_ORDERS", serializedActiveOrders).apply()
-            val serializedCurrentInfoMsgId = Gson().toJson(TGInfoMessage.currentInfoMsgId)
+
             sharedPreferences.edit()
-                .putString("CURRENT_INFO_MESSAGE_ID", serializedCurrentInfoMsgId).apply()
-            Log.i(
-                "webOrderMonitor",
-                "sharedPreferences SAVE: $serializedActiveOrders $serializedCurrentInfoMsgId"
-            )
+                .putString("CURRENT_INFO_MESSAGE_ID", TGInfoMessage.currentInfoMsgId.toString()).apply()
+
+            sharedPreferences.edit()
+                .putString("DAY_CONFIRMED_COUNT", TGbot.dayConfirmedCount.toString()).apply()
+
+            Log.i("webOrderMonitor", "sharedPreferences activeOrders SAVE: $serializedActiveOrders")
+            Log.i("webOrderMonitor", "sharedPreferences currentInfoMsgId SAVE: ${TGInfoMessage.currentInfoMsgId}")
+            Log.i("webOrderMonitor", "sharedPreferences dayConfirmedCount SAVE: ${TGbot.dayConfirmedCount}")
         }
     }
 

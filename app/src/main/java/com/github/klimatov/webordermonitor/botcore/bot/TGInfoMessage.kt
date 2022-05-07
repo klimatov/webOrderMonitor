@@ -16,7 +16,6 @@ object TGInfoMessage {
     var newInfoMsgId: Long? = null
     var currentInfoMsg: InlineKeyboardMarkup? = null
     var notConfirmedOrders: Int = 0  //активных не подтвержденных
-    var dayConfirmedCount: Int = 0  //подтверждено за день
 
     suspend fun updateInfoMsg(binding: ActivityMainBinding) {
         if (newInfoMsgId != null) {
@@ -34,7 +33,7 @@ object TGInfoMessage {
 
             val infoMsg = inlineKeyboard {
                 row {
-                    dataButton(updMsg, " ")
+                    dataButton(updMsg, "infoRequest")
                 }
             }
 

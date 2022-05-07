@@ -2,13 +2,18 @@ package bot
 
 import android.util.Log
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
+import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.answers.answerCallbackQuery
+import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPolling
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
+import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onDataCallbackQuery
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.MessageEntity.textsources.bold
 import dev.inmo.tgbotapi.types.MessageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +26,8 @@ object TGbot {
     val targetChatId = ChatId(SecurityData.TELEGRAM_CHAT_ID)
     val bot = telegramBot(botToken)
     val msgConvert = BotMessage()
-    var msgNotification = true
+    var msgNotification = msgConvert.shopInWork()
+    var dayConfirmedCount: Int = 0  //подтверждено за день
 
     suspend fun botDaemonStart() {
         val scope = CoroutineScope(Dispatchers.IO)
@@ -30,6 +36,14 @@ object TGbot {
             onCommand("status") {
                 sendTextMessage(it.chat, "Bot online")
             }
+
+            onDataCallbackQuery {
+                Log.d("webOrderMonitor", "Callback: ${it.data} from ${it.user.firstName} ${it.user.lastName} ${it.user.username?.usernameWithoutAt}")
+                answer(
+                    it, msgConvert.popupMessage(), showAlert = true
+                )
+            }
+
             Log.i("webOrderMonitor", "Bot started: ${getMe()}")
         }.start()
     }

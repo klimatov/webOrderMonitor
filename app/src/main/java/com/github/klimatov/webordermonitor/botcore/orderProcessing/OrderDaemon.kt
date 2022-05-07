@@ -7,7 +7,6 @@ import bot.TGbot
 import com.github.klimatov.webordermonitor.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import kotlinx.coroutines.*
 import orderProcessing.data.Items
 import orderProcessing.data.RemainsLocal
@@ -38,7 +37,7 @@ object OrderDaemon {
             val type = object : TypeToken<MutableMap<String?, WebOrder?>>() {}.type
             processing.activeOrders =
                 Gson().fromJson(serializedActiveOrders, type)
-            Log.i("webOrderMonitor", "sharedPreferences READ: $serializedActiveOrders")
+            Log.i("webOrderMonitor", "sharedPreferences activeOrders READ: $serializedActiveOrders")
 
 //            val maxVal = emptyList<Long>().toMutableList()
 //            processing.activeOrders.forEach { maxVal.add(it.value?.messageId!!) }
@@ -46,13 +45,17 @@ object OrderDaemon {
 //                maxVal.maxOrNull()// messageID последнего сообщения для инфокнопки
         }
 
-        val serializedCurrentInfoMsgId = sharedPreferences.getString("CURRENT_INFO_MESSAGE_ID", null)
-        if (serializedCurrentInfoMsgId != null) {
-            val type = object : TypeToken<Long?>() {}.type
-            TGInfoMessage.currentInfoMsgId =
-                Gson().fromJson(serializedCurrentInfoMsgId, type)
+        val currentInfoMsgId = sharedPreferences.getString("CURRENT_INFO_MESSAGE_ID", null)
+        if (currentInfoMsgId != null) {
+            TGInfoMessage.currentInfoMsgId = currentInfoMsgId.toLong()
             TGInfoMessage.newInfoMsgId = TGInfoMessage.currentInfoMsgId
-            Log.i("webOrderMonitor", "sharedPreferences READ: $serializedCurrentInfoMsgId")
+            Log.i("webOrderMonitor", "sharedPreferences currentInfoMsgId READ: $currentInfoMsgId")
+        }
+
+        val dayConfirmedCount = sharedPreferences.getString("DAY_CONFIRMED_COUNT", null)
+        if (dayConfirmedCount != null) {
+            TGbot.dayConfirmedCount = dayConfirmedCount.toInt()
+            Log.i("webOrderMonitor", "sharedPreferences dayConfirmedCount READ: $dayConfirmedCount")
         }
 
         val scope = CoroutineScope(Dispatchers.IO)
@@ -64,10 +67,21 @@ object OrderDaemon {
                     binding.textProcess.text = "Обновляем данные..."
                 }
 
-                // проверяем открыт ли магазин и триггерим звук уведомлений
+                // проверяем открыт ли магазин, триггерим звук уведомлений
                 if (TGbot.msgConvert.shopInWork()!=TGbot.msgNotification) {
                     TGbot.msgNotification = !TGbot.msgNotification
                     TGbot.botSendInfoMessage()
+                    // если магазин закрылся, то сбрасываем счетчик собранных за день и записываем в настройки
+                    if (!TGbot.msgNotification) {
+                        TGbot.dayConfirmedCount = 0
+                        val serializedDayConfirmedCount = Gson().toJson(TGbot.dayConfirmedCount)
+                        sharedPreferences.edit()
+                            .putString("DAY_CONFIRMED_COUNT", serializedDayConfirmedCount).apply()
+                        Log.i(
+                            "webOrderMonitor",
+                            "sharedPreferences dayConfirmedCount SAVE: ${TGbot.dayConfirmedCount}"
+                        )
+                    }
                 }
                 Log.d("webOrderMonitor", "Shop open: ${TGbot.msgConvert.shopInWork()}")
 
@@ -102,7 +116,7 @@ object OrderDaemon {
 
     suspend fun getItems(orderId: String?): List<Items> {
         val orderItems = netClient.getWebOrderDetail(orderId, "WRQST")
-        return orderItems!!.items
+        if (orderItems == null) return emptyList() else return orderItems.items
     }
 
     suspend fun getRemains(goodCode: String?): List<RemainsLocal> {

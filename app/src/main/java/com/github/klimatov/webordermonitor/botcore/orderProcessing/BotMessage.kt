@@ -1,6 +1,7 @@
 package orderProcessing
 
 import bot.TGInfoMessage
+import bot.TGbot
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.TextSourcesList
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.italic
@@ -114,7 +115,12 @@ class BotMessage {
         if (notification) {
             return "\uD83D\uDD08 Магазин открыт, включаем уведомления!"
         } else {
-            return "\uD83D\uDD07 Магазин закрыт, отключаем уведомления!"
+            return "\uD83D\uDD07 Магазин закрыт, отключаем уведомления!\n" +
+                    "\uD83D\uDE2B Сегодня за день упало ${orderEnding(TGbot.dayConfirmedCount)}"
         }
+    }
+
+    fun popupMessage(): String {
+        return "Сегодня упало ${orderEnding(TGbot.dayConfirmedCount)}"
     }
 }
