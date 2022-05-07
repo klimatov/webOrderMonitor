@@ -45,19 +45,10 @@ object OrderDaemon {
             TGInfoMessage.newInfoMsgId =
                 maxVal.maxOrNull()// messageID последнего сообщения для инфокнопки
         }
-
-
         val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            if (netClient.login(login, password, werk)) {
-                Log.i("webOrderMonitor", "Connected to base ${netClient.userInfo}")
-            } else {
-                Log.e("webOrderMonitor", "Error: ${netClient.error}")
-                exitProcess(999)
-            }
-        }.join()
 
         scope.launch {
+            login()
             while (true) {  // основной цикл проверки
                 withContext(Dispatchers.Main) {
                     binding.textProcess.text = "Обновляем данные..."
@@ -65,20 +56,30 @@ object OrderDaemon {
 
                 val orderList =
                     netClient.getWebOrderListSimple("new") //all or new  --- получаем список неподтвержденных
-                if (orderList != null) {
-                    processing.processInworkOrders(
-                        orderList,
-                        binding,
-                        sharedPreferences
-                    )   // --- обрабатываем список неподтвержденных вебок
+
+                when (netClient.errorCode) {
+                    200 -> processing.processInworkOrders(orderList, binding, sharedPreferences)
+                    401 -> login()
+                    else -> delay(30000L)
                 }
+
                 withContext(Dispatchers.Main) {
+                    binding.textError.text = "Код ответа сервера: ${netClient.errorCode.toString()}"
                     binding.textProcess.text = "Ждем следующего обновления..."
                 }
                 Log.i("webOrderMonitor", "Wait next iteration 30 second")
                 delay(30000L)
             }
         }.join()
+    }
+
+    suspend fun login() {
+            if (netClient.login(login, password, werk)) {
+                Log.i("webOrderMonitor", "Connected to base ${netClient.userInfo}")
+            } else {
+                Log.e("webOrderMonitor", "Error: ${netClient.error}")
+                exitProcess(999)
+            }
     }
 
     suspend fun getItems(orderId: String?): List<Items> {
