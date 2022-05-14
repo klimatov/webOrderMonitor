@@ -21,6 +21,7 @@ class NetClient {
     private val dbVersion = "16"
     private val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault())
     val gmt = SimpleDateFormat("Z").format(calendar.time)
+    var remoteDbVersion: Int? = null
 //    var timeZone = TimeZone.getTimeZone("GMT+07:00")
 //    val gmt = timeZone.rawOffset.toString()
 
@@ -95,9 +96,10 @@ class NetClient {
             )?.execute()
             this.errorCode = response?.code()
             Log.d("webOrderMonitor", "Authentication result code: ${response?.code()}")
-
-            val responseJson = Gson().fromJson(response?.body(), ListWebOrderSimply::class.java)
-            return responseJson.webOrderSimply
+            if (this.errorCode == 200) {
+                val responseJson = Gson().fromJson(response?.body(), ListWebOrderSimply::class.java)
+                return responseJson.webOrderSimply
+            } else return emptyList()
         } catch (e: Exception) {
             Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()
@@ -194,9 +196,13 @@ class NetClient {
             val response = RetrofitInstance.eldoApi.getDBVersion(shop)?.execute()
             this.errorCode = response?.code()
             Log.d("webOrderMonitor", "Authentication result code: ${response?.code()}")
-
-            val responseJson = Gson().fromJson(response?.body(), DbVersion::class.java)
-            return responseJson.version!!
+            if (this.errorCode == 200) {
+                val responseJson = Gson().fromJson(response?.body(), DbVersion::class.java)
+                this.remoteDbVersion = responseJson.version
+                return responseJson.version
+            } else {
+                return 0
+            }
         } catch (e: Exception) {
             Log.e("webOrderMonitor", "Exception: ${e.message}")
             this.error = e.message.toString()

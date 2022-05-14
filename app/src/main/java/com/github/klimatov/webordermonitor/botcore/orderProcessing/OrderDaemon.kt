@@ -97,6 +97,7 @@ object OrderDaemon {
                 withContext(Dispatchers.Main) {
                     binding.textError.text = "Код ответа сервера: ${netClient.errorCode.toString()}"
                     binding.textProcess.text = "Ждем следующего обновления..."
+                    binding.textDBversion.text = "Версия базы на сервере: ${netClient.remoteDbVersion}"
                 }
 
                 Log.i("webOrderMonitor", "Wait next iteration 30 second")
@@ -108,9 +109,10 @@ object OrderDaemon {
     suspend fun login() {
             if (netClient.login(login, password, werk)) {
                 Log.i("webOrderMonitor", "Connected to base ${netClient.userInfo}")
+                netClient.getDBVersion()
             } else {
-                Log.e("webOrderMonitor", "Error: ${netClient.error}")
-                exitProcess(999)
+                Log.e("webOrderMonitor", "Login failed with Error: ${netClient.error}")
+                //exitProcess(999)
             }
     }
 

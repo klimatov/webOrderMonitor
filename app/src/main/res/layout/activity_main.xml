@@ -7,10 +7,10 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textStatus"
+        android:id="@+id/textDBversion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="webOrderMonitor is running!"
+        android:text="Версия базы на сервере: "
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@id/textOrderCount"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toTopOf="@id/textProcess"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/textDBversion" />
 
     <TextView
         android:id="@+id/textProcess"
@@ -49,6 +49,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textProcess" />
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ВЫХОД"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textError" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

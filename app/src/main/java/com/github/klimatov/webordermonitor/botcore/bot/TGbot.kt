@@ -18,6 +18,7 @@ import dev.inmo.tgbotapi.types.MessageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import orderProcessing.BotMessage
+import orderProcessing.OrderDaemon
 import orderProcessing.data.SecurityData
 import orderProcessing.data.WebOrder
 
@@ -34,7 +35,7 @@ object TGbot {
 
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
-                sendTextMessage(it.chat, "Bot online")
+                sendTextMessage(it.chat, "Bot online, remote DB version: ${OrderDaemon.netClient.remoteDbVersion}")
             }
 
             onDataCallbackQuery {

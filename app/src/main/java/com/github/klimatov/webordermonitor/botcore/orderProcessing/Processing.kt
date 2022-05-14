@@ -24,18 +24,21 @@ class Processing {
         // проверка, появились ли новые вебки, отсутствующие в списке активных?
         inworkOrderList.forEach { webOrder ->
             if (!activeOrders.containsKey(webOrder.webNum)) {
-                activeOrders[webOrder.webNum] =
-                    OrderDaemon.getOrderList(webOrder.webNum)[0]// добавляем новую вебку в список активных
-                TGbot.dayConfirmedCount++ // увеличиваем на 1 счетчик собранных за день
-                activeOrders[webOrder.webNum]?.items =
-                    OrderDaemon.getItems(activeOrders[webOrder.webNum]?.orderId) // обновляем список товара (items)
-                activeOrders[webOrder.webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару
-                    items.remains = OrderDaemon.getRemains(items.goodCode)
+                val newOrder = OrderDaemon.getOrderList(webOrder.webNum)
+                if (newOrder.isNotEmpty()) {
+                    activeOrders[webOrder.webNum] =
+                        newOrder[0]// добавляем новую вебку в список активных
+                    TGbot.dayConfirmedCount++ // увеличиваем на 1 счетчик собранных за день
+                    activeOrders[webOrder.webNum]?.items =
+                        OrderDaemon.getItems(activeOrders[webOrder.webNum]?.orderId) // обновляем список товара (items)
+                    activeOrders[webOrder.webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару
+                        items.remains = OrderDaemon.getRemains(items.goodCode)
+                    }
+                    activeOrders[webOrder.webNum]?.activeTime =
+                        TGbot.msgConvert.timeDiff(webOrder.docDate) // время активности
+                    newOrder(webOrder.webNum)
+                    newFlag = true
                 }
-                activeOrders[webOrder.webNum]?.activeTime =
-                    TGbot.msgConvert.timeDiff(webOrder.docDate) // время активности
-                newOrder(webOrder.webNum)
-                newFlag = true
             }
         }
         var msg = ""

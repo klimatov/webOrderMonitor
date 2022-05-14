@@ -1,5 +1,6 @@
 package com.github.klimatov.webordermonitor
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,29 +11,38 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import orderProcessing.OrderDaemon
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.temporal.ChronoUnit
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var binding: ActivityMainBinding
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val sharedPreferences = getSharedPreferences("webOrderMonitor", 0)
-
+        sharedPreferences = getSharedPreferences("webOrderMonitor", 0)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 //        setContentView(R.layout.activity_main)
 
         AndroidThreeTen.init(this)
+        mainScope.start()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            TGbot.botDaemonStart()
-            OrderDaemon.orderDaemonStart(binding, sharedPreferences)
-        }.start()
+        binding.exitButton.setOnClickListener {
+            finishAndRemoveTask()
+            exitProcess(0)
+        }
+
+    }
+
+    private val mainScope = CoroutineScope(Dispatchers.IO).launch {
+        TGbot.botDaemonStart()
+        OrderDaemon.orderDaemonStart(binding, sharedPreferences)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainScope.cancel()
+        Log.d("webOrderMonitor", "onDestroy")
     }
 }
