@@ -91,7 +91,7 @@ object OrderDaemon {
                 when (netClient.errorCode) {
                     200 -> processing.processInworkOrders(orderList, binding, sharedPreferences)
                     401 -> login()
-                    else -> delay(30000L)
+                    else -> Log.e("webOrderMonitor", "Error ${netClient.errorCode} ${netClient.error}")
                 }
 
                 withContext(Dispatchers.Main) {

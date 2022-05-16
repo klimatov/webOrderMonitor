@@ -19,13 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidThreeTen.init(this)
         sharedPreferences = getSharedPreferences("webOrderMonitor", 0)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 //        setContentView(R.layout.activity_main)
 
-        AndroidThreeTen.init(this)
         mainScope.start()
 
         binding.exitButton.setOnClickListener {

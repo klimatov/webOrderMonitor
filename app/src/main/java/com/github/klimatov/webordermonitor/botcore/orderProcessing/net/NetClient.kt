@@ -1,5 +1,6 @@
 package orderProcessing.net
 
+import DateTimeProcess
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -80,7 +81,7 @@ class NetClient {
         }
         val hashMap: HashMap<Any?, Any?> = hashMapOf(
             "orderType" to "WRQST",
-            "dateFrom" to "18.03.2022",
+            "dateFrom" to DateTimeProcess().dateFrom(),
             "dateTo" to "01.01.2030",
             "docStatus" to str,
             "skip" to 0,
@@ -115,7 +116,7 @@ class NetClient {
         }
         val hashMap: HashMap<Any?, Any?> = hashMapOf(
             "orderType" to "WRQST",
-            "dateFrom" to "18.03.2022",
+            "dateFrom" to DateTimeProcess().dateFrom(),
             "dateTo" to "01.01.2030",
             "docStatus" to str,
             "skip" to 0,
