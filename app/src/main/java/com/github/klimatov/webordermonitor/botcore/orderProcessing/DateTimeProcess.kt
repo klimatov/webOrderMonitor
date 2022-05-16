@@ -13,4 +13,8 @@ class DateTimeProcess {
         val docDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         return LocalDateTime.parse(docDate, docDateFormat)
     }
+
+    fun replaceDateTime(docDate: String): String {
+        return dateFormat(docDate).format(DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"))
+    }
 }

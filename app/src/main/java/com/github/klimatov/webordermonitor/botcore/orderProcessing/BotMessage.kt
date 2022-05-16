@@ -1,5 +1,6 @@
 package orderProcessing
 
+import DateTimeProcess
 import bot.TGInfoMessage
 import bot.TGbot
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
@@ -25,7 +26,7 @@ class BotMessage {
             regularln("#️⃣${webOrder?.webNum}/${webOrder?.orderId}")
             regular("${webOrder?.ordType} ")
             if (webOrder?.isLegalEntity == "Y") bold("СЧЁТ КОНТРАГЕНТА")
-            underlineln("\n\uD83D\uDCC6${webOrder?.docDate}")
+            underlineln("\n\uD83D\uDCC6${DateTimeProcess().replaceDateTime(webOrder?.docDate?:"")}")
             regularln("${if (webOrder?.paid == "Y") "\uD83D\uDCB0Онлайн оплата" else "\uD83E\uDDFEНе оплачен"} \uD83D\uDCB5${webOrder?.docSum} руб.")
             regular("\uD83D\uDC68${webOrder?.fioCustomer} ")
             phone("+${webOrder?.phone}")
