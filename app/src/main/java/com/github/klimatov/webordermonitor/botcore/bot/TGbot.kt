@@ -11,6 +11,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPolling
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
+import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommandWithArgs
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onDataCallbackQuery
 import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.bold
@@ -19,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import orderProcessing.BotMessage
 import orderProcessing.OrderDaemon
+import orderProcessing.data.ListWebOrder
 import orderProcessing.data.SecurityData
 import orderProcessing.data.WebOrder
 
@@ -35,11 +37,48 @@ object TGbot {
 
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
-                sendTextMessage(it.chat, "Bot online, remote DB version: ${OrderDaemon.netClient.remoteDbVersion}")
+                sendTextMessage(
+                    it.chat,
+                    "Bot online, remote DB version: ${OrderDaemon.netClient.remoteDbVersion}"
+                )
+            }
+
+            onCommandWithArgs("web") { message, args ->
+                if (args.isNotEmpty()) {
+                    args.forEach {
+                        if ((it.count() == 9) && (it.toIntOrNull() != null)) {
+
+                            try {
+                                val orderPoor = OrderDaemon.netClient.getWebOrderList(
+                                    "all",
+                                    it
+                                )?.webOrders?.last()
+                                val orderDetail =
+                                    OrderDaemon.netClient.getWebOrderDetail(
+                                        orderPoor?.orderId,
+                                        "WRQST"
+                                    )
+
+                                sendTextMessage(message.chat, "$orderPoor $orderDetail")
+                            } catch (e: Exception) {
+                                sendTextMessage(
+                                    message.chat,
+                                    "Ошибка получения данных ${e.message}"
+                                )
+                                Log.e("webOrderMonitor", "Exception: ${e.message}")
+                            }
+
+                        } else sendTextMessage(message.chat, "Некорректный номер заявки $it")
+                    }
+                    //sendTextMessage(message.chat, args.size.toString())
+                }
             }
 
             onDataCallbackQuery {
-                Log.d("webOrderMonitor", "Callback: ${it.data} from ${it.user.firstName} ${it.user.lastName} ${it.user.username?.usernameWithoutAt}")
+                Log.d(
+                    "webOrderMonitor",
+                    "Callback: ${it.data} from ${it.user.firstName} ${it.user.lastName} ${it.user.username?.usernameWithoutAt}"
+                )
                 answer(
                     it, msgConvert.popupMessage(), showAlert = true
                 )

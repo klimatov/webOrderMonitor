@@ -30,7 +30,7 @@ class Processing {
                         newOrder[0]// добавляем новую вебку в список активных
                     TGbot.dayConfirmedCount++ // увеличиваем на 1 счетчик собранных за день
 
-                    activeOrders[webOrder.webNum]?.itemsUpdateStatus = itemsUpdate(webOrder.webNum) // обновляем items  и остатки по каждому, если все ок, то статус true
+                    itemsUpdate(webOrder.webNum) // обновляем items  и остатки по каждому, если все ок, то статус true
 
                     activeOrders[webOrder.webNum]?.activeTime =
                         TGbot.msgConvert.timeDiff(webOrder.docDate) // время активности
@@ -71,30 +71,46 @@ class Processing {
             sharedPreferences.edit().putString("ACTIVE_ORDERS", serializedActiveOrders).apply()
 
             sharedPreferences.edit()
-                .putString("CURRENT_INFO_MESSAGE_ID", TGInfoMessage.currentInfoMsgId.toString()).apply()
+                .putString("CURRENT_INFO_MESSAGE_ID", TGInfoMessage.currentInfoMsgId.toString())
+                .apply()
 
             sharedPreferences.edit()
                 .putString("DAY_CONFIRMED_COUNT", TGbot.dayConfirmedCount.toString()).apply()
 
             Log.i("webOrderMonitor", "sharedPreferences activeOrders SAVE: $serializedActiveOrders")
-            Log.i("webOrderMonitor", "sharedPreferences currentInfoMsgId SAVE: ${TGInfoMessage.currentInfoMsgId}")
-            Log.i("webOrderMonitor", "sharedPreferences dayConfirmedCount SAVE: ${TGbot.dayConfirmedCount}")
+            Log.i(
+                "webOrderMonitor",
+                "sharedPreferences currentInfoMsgId SAVE: ${TGInfoMessage.currentInfoMsgId}"
+            )
+            Log.i(
+                "webOrderMonitor",
+                "sharedPreferences dayConfirmedCount SAVE: ${TGbot.dayConfirmedCount}"
+            )
         }
     }
 
     // обновляем товары и остатки
-    private suspend fun itemsUpdate(webNum: String?) : Boolean {
+    private suspend fun itemsUpdate(webNum: String?) {
         var result = true
-        activeOrders[webNum]?.items =
-            OrderDaemon.getItems(activeOrders[webNum]?.orderId) // обновляем список товара (items)
-        if (OrderDaemon.netClient.errorCode != 200) result = false // фиксируем что в запросе все ок
 
-        activeOrders[webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару
-            items.remains = OrderDaemon.getRemains(items.goodCode)
-            if (OrderDaemon.netClient.errorCode != 200) result = false // фиксируем что в запросе все ок
+        // обновляем список товара (items) если он пуст
+        if (activeOrders[webNum]?.items?.isEmpty() == true) {
+            activeOrders[webNum]?.items =
+                OrderDaemon.getItems(activeOrders[webNum]?.orderId)
+            if (OrderDaemon.netClient.errorCode != 200) result =
+                false // фиксируем что в запросе все ок
         }
+
+        activeOrders[webNum]?.items?.forEach { items ->  // обновляем остатки по каждому товару если он пуст
+            if (items.remains.isEmpty()) {
+                items.remains = OrderDaemon.getRemains(items.goodCode)
+                if (OrderDaemon.netClient.errorCode != 200) result =
+                    false // фиксируем что в запросе все ок
+            }
+        }
+        activeOrders[webNum]?.itemsUpdateStatus =
+            result // обновляем items  и остатки по каждому, если все ок, то статус true
         Log.d("webOrderMonitor", "$webNum Items and remains update result: $result")
-        return result
     }
 
     suspend fun newOrder(webNum: String?) {
