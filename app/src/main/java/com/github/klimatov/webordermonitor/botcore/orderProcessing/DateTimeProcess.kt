@@ -5,7 +5,7 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class DateTimeProcess {
     fun dateFrom() : String {
-        val result = LocalDate.now().minusDays(14)
+        val result = LocalDate.now().minusDays(35)
         return result.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
 

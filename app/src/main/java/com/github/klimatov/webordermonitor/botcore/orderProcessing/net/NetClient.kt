@@ -85,7 +85,7 @@ class NetClient {
             "dateTo" to "01.01.2030",
             "docStatus" to str,
             "skip" to 0,
-            "limit" to 99
+            "limit" to 1000
         )
         try {
             val response = RetrofitInstance.eldoApi.getWebOrderListSimple(

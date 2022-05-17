@@ -103,7 +103,8 @@ data class WebOrder(
     @SerializedName("messageId") var messageId: Long? = null, // manual
     @SerializedName("activeTime") var activeTime: Long? = null, // manual
     @SerializedName("items") var items: List<Items> = emptyList(), //manual
-    @SerializedName("status") var status: Status? = Status() //new 01.05.2022
+    @SerializedName("status") var status: Status? = Status(), //new 01.05.2022
+    @SerializedName("itemsUpdateStatus") var itemsUpdateStatus: Boolean = false // manual
 )
 
 data class WebOrderDetail(
