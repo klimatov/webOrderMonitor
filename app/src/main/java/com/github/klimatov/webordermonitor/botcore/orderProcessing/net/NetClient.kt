@@ -76,7 +76,7 @@ class NetClient {
 
     fun getWebOrderListSimple(selection: String): List<WebOrderSimply> {
         val str = when (selection) {
-            "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT"
+            "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT,WRQST_RCVD,DOC_STORN"
             else -> "WRQST_CRTD"
         }
         val hashMap: HashMap<Any?, Any?> = hashMapOf(
@@ -111,7 +111,7 @@ class NetClient {
 
     fun getWebOrderList(selection: String, webNum: String?): ListWebOrder? {
         val str = when (selection) {
-            "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT"
+            "all" -> "WRQST_CRTD,PWRQT_DLVD,WRQST_ACPT,WRQST_RCVD,DOC_STORN"
             else -> "WRQST_CRTD"
         }
         val hashMap: HashMap<Any?, Any?> = hashMapOf(

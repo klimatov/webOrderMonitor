@@ -23,6 +23,7 @@ import orderProcessing.OrderDaemon
 import orderProcessing.data.ListWebOrder
 import orderProcessing.data.SecurityData
 import orderProcessing.data.WebOrder
+import orderProcessing.data.WebOrderDetail
 
 object TGbot {
     private val botToken: String = SecurityData.TELEGRAM_BOT_TOKEN
@@ -59,7 +60,40 @@ object TGbot {
                                         "WRQST"
                                     )
 
-                                sendTextMessage(message.chat, "$orderPoor $orderDetail")
+                                sendTextMessage(
+                                    message.chat,
+                                    "${orderText(orderPoor)}\n${docText(orderDetail)}",
+                                    disableWebPagePreview = true
+                                )
+                            } catch (e: Exception) {
+                                sendTextMessage(
+                                    message.chat,
+                                    "Ошибка получения данных ${e.message}"
+                                )
+                                Log.e("webOrderMonitor", "Exception: ${e.message}")
+                            }
+
+                        } else sendTextMessage(message.chat, "Некорректный номер заявки $it")
+                    }
+                }
+            }
+
+            onCommandWithArgs("doc") { message, args ->
+                if (args.isNotEmpty()) {
+                    args.forEach {
+                        if ((it.count() == 7) && (it.toIntOrNull() != null)) {
+
+                            try {
+                                val orderDetail =
+                                    OrderDaemon.netClient.getWebOrderDetail(
+                                        it,
+                                        "WRQST"
+                                    )
+                                sendTextMessage(
+                                    message.chat,
+                                    docText(orderDetail),
+                                    disableWebPagePreview = true
+                                )
                             } catch (e: Exception) {
                                 sendTextMessage(
                                     message.chat,
@@ -87,6 +121,32 @@ object TGbot {
             Log.i("webOrderMonitor", "Bot started: ${getMe()}")
         }.start()
     }
+
+    private fun orderText(orderPoor: WebOrder?) =
+        "Веб заявка №${orderPoor?.webNum}\n" +
+                "Заказ №${orderPoor?.orderId}\n" +
+                "Статус заявки: ${orderPoor?.status?.title}\n" +
+                "Описание: ${orderPoor?.status?.description}\n"
+
+    private fun docText(orderDetail: WebOrderDetail?) =
+        "Веб заявка №${orderDetail?.webOrder?.webNum}\n" +
+                "Заказ №${orderDetail?.webOrder?.orderId}\n" +
+                "Тип: ${orderDetail?.webOrder?.ordType}\n" +
+                "Юр.лицо: ${orderDetail?.webOrder?.isLegalEntity}\n" +
+                "ФИО: ${orderDetail?.webOrder?.fioCustomer}\n" +
+                "Оплачена: ${orderDetail?.webOrder?.paid}\n" +
+                "Дата заказа: ${orderDetail?.webOrder?.docDate}\n" +
+                "Сумма: ${orderDetail?.webOrder?.docSum}\n" +
+                "Статус заявки: ${orderDetail?.webOrder?.docStatus}\n" +
+                "Validate: ${orderDetail?.validate?.validate}\n" +
+                "Message: ${orderDetail?.validate?.message}\n" +
+                orderDetail?.items?.joinToString { item ->
+                    "НН: ${item.goodCode}\n" +
+                            "Наименование: ${item.name}\n" +
+                            "Цена: ${item.amount}\n" +
+                            "ШК: ${item.barCode}\n" +
+                            "Ссылка: ${item.eshopUrl}"
+                }
 
     suspend fun botSendMessage(webOrder: WebOrder?): Long? {
         try {
