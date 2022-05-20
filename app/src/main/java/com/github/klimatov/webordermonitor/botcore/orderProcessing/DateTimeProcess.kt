@@ -2,6 +2,7 @@ import com.soywiz.klock.DateTime
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class DateTimeProcess {
     fun dateFrom() : String {
@@ -16,5 +17,12 @@ class DateTimeProcess {
 
     fun replaceDateTime(docDate: String): String {
         return dateFormat(docDate).format(DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy"))
+    }
+
+    class dateDiff(startDate: LocalDateTime, endDate: LocalDateTime = LocalDateTime.now()) {
+        private val period = startDate.until(endDate, ChronoUnit.MINUTES)
+        val days = period / 1440
+        val hours = period % 1440 / 60
+        val minutes = period % 1440 % 60
     }
 }

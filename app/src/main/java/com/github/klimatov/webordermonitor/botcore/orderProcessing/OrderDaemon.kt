@@ -13,7 +13,7 @@ import orderProcessing.data.RemainsLocal
 import orderProcessing.data.SecurityData
 import orderProcessing.data.WebOrder
 import orderProcessing.net.NetClient
-import kotlin.system.exitProcess
+import org.threeten.bp.LocalDateTime
 
 object OrderDaemon {
     private val login = SecurityData.TS_LOGIN
@@ -21,6 +21,8 @@ object OrderDaemon {
     private val werk = SecurityData.TS_SHOP
     val netClient = NetClient()
     private val processing = Processing()
+    val appStartTime: LocalDateTime = LocalDateTime.now()
+    var loginTime: LocalDateTime = LocalDateTime.now()
 
     suspend fun orderDaemonStart(
         binding: ActivityMainBinding,
@@ -109,6 +111,7 @@ object OrderDaemon {
     suspend fun login() {
             if (netClient.login(login, password, werk)) {
                 Log.i("webOrderMonitor", "Connected to base ${netClient.userInfo}")
+                loginTime = LocalDateTime.now()
                 netClient.getDBVersion()
             } else {
                 Log.e("webOrderMonitor", "Login failed with Error: ${netClient.error}")

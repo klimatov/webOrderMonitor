@@ -1,10 +1,9 @@
 package bot
 
+import DateTimeProcess
 import android.util.Log
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
-import dev.inmo.tgbotapi.extensions.api.answers.answerCallbackQuery
-import dev.inmo.tgbotapi.extensions.api.answers.answerInlineQuery
 import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
@@ -13,6 +12,7 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPoll
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommand
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onCommandWithArgs
 import dev.inmo.tgbotapi.extensions.behaviour_builder.triggers_handling.onDataCallbackQuery
+import dev.inmo.tgbotapi.extensions.utils.asFromUser
 import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.bold
 import dev.inmo.tgbotapi.types.MessageIdentifier
@@ -38,9 +38,20 @@ object TGbot {
 
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
+                val serverT = DateTimeProcess.dateDiff(OrderDaemon.appStartTime)
+                val loginT = DateTimeProcess.dateDiff(OrderDaemon.appStartTime)
                 sendTextMessage(
                     it.chat,
-                    "Bot online, remote DB version: ${OrderDaemon.netClient.remoteDbVersion}"
+                    "Bot online\n" +
+                            "Remote DB version: ${OrderDaemon.netClient.remoteDbVersion}\n" +
+                            "Server online: ${serverT.days}d ${serverT.hours}h ${serverT.minutes}m\n" +
+                            "Login time: ${loginT.days}d ${loginT.hours}h ${loginT.minutes}m\n" +
+                            "Last error code: ${OrderDaemon.netClient.errorCode}\n" +
+                            "Last error message: ${OrderDaemon.netClient.error}"
+                )
+                Log.d(
+                    "webOrderMonitor",
+                    "Command: ${it.content.text} from ${it.asFromUser()?.user?.firstName} ${it.asFromUser()?.user?.lastName} ${it.asFromUser()?.user?.username?.usernameWithoutAt}"
                 )
             }
 
@@ -76,6 +87,10 @@ object TGbot {
                         } else sendTextMessage(message.chat, "Некорректный номер заявки $it")
                     }
                 }
+                Log.d(
+                    "webOrderMonitor",
+                    "Command: ${message.content.text} ${args.joinToString { "$it " }} from ${message.asFromUser()?.user?.firstName} ${message.asFromUser()?.user?.lastName} ${message.asFromUser()?.user?.username?.usernameWithoutAt}"
+                )
             }
 
             onCommandWithArgs("doc") { message, args ->
@@ -106,6 +121,10 @@ object TGbot {
                     }
                     //sendTextMessage(message.chat, args.size.toString())
                 }
+                Log.d(
+                    "webOrderMonitor",
+                    "Command: ${message.content.text} ${args.joinToString { "$it " }} from ${message.asFromUser()?.user?.firstName} ${message.asFromUser()?.user?.lastName} ${message.asFromUser()?.user?.username?.usernameWithoutAt}"
+                )
             }
 
             onDataCallbackQuery {
@@ -130,6 +149,7 @@ object TGbot {
 
     private fun docText(orderDetail: WebOrderDetail?) =
         "Веб заявка №${orderDetail?.webOrder?.webNum}\n" +
+                "Статус заявки: ${orderDetail?.webOrder?.docStatus}\n" +
                 "Заказ №${orderDetail?.webOrder?.orderId}\n" +
                 "Тип: ${orderDetail?.webOrder?.ordType}\n" +
                 "Юр.лицо: ${orderDetail?.webOrder?.isLegalEntity}\n" +
@@ -137,7 +157,6 @@ object TGbot {
                 "Оплачена: ${orderDetail?.webOrder?.paid}\n" +
                 "Дата заказа: ${orderDetail?.webOrder?.docDate}\n" +
                 "Сумма: ${orderDetail?.webOrder?.docSum}\n" +
-                "Статус заявки: ${orderDetail?.webOrder?.docStatus}\n" +
                 "Validate: ${orderDetail?.validate?.validate}\n" +
                 "Message: ${orderDetail?.validate?.message}\n" +
                 orderDetail?.items?.joinToString { item ->
