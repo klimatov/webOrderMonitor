@@ -133,8 +133,15 @@ data class Items(
     @SerializedName("parentiTemNo") var parentiTemNo: String? = null,
     @SerializedName("shelf") var shelf: String? = null,
     @SerializedName("params") var params: List<Params> = emptyList(),
-    @SerializedName("incomplet") var incomplet: String? = null,
+    @SerializedName("incomplet") var incomplet: Incomplet? = Incomplet(), //new 21.05.2022
     @SerializedName("remains") var remains: List<RemainsLocal> = emptyList()//manual
+)
+
+data class Incomplet(
+    @SerializedName("ogItemId") var ogItemId: Int? = null,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("reasonCode") var reasonCode: String? = null,
+    @SerializedName("comments") var comments: String? = null
 )
 
 data class Params(
