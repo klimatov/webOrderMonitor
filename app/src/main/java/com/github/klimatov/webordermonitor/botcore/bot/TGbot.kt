@@ -34,7 +34,7 @@ object TGbot {
     var dayConfirmedCount: Int = 0  //подтверждено за день
 
     suspend fun botDaemonStart() {
-        val scope = CoroutineScope(Dispatchers.IO)
+        val scope = CoroutineScope(Dispatchers.Default)
 
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
@@ -73,7 +73,7 @@ object TGbot {
 
                                 sendTextMessage(
                                     message.chat,
-                                    "${orderText(orderPoor)}\n${docText(orderDetail)}",
+                                    "${docText(orderDetail)}\n${orderText(orderPoor)}",
                                     disableWebPagePreview = true
                                 )
                             } catch (e: Exception) {
@@ -142,15 +142,12 @@ object TGbot {
     }
 
     private fun orderText(orderPoor: WebOrder?) =
-        "Веб заявка №${orderPoor?.webNum}\n" +
-                "Заказ №${orderPoor?.orderId}\n" +
-                "Статус заявки: ${orderPoor?.status?.title}\n" +
-                "Описание: ${orderPoor?.status?.description}\n"
+        (if (orderPoor?.status?.title != null) "Статус: ${orderPoor?.status?.title}\n" else "") +
+                (if (orderPoor?.status?.description != null) "Описание: ${orderPoor?.status?.description}\n" else "")
 
     private fun docText(orderDetail: WebOrderDetail?) =
-        "Веб заявка №${orderDetail?.webOrder?.webNum}\n" +
-                "Статус заявки: ${orderDetail?.webOrder?.docStatus}\n" +
-                "Заказ №${orderDetail?.webOrder?.orderId}\n" +
+        "Заявка №${orderDetail?.webOrder?.webNum} / ${orderDetail?.webOrder?.orderId}\n" +
+                "Статус заявки: ${BotMessage().statusCodeResolve(orderDetail?.webOrder?.docStatus)}\n" +
                 "Тип: ${orderDetail?.webOrder?.ordType}\n" +
                 "Юр.лицо: ${orderDetail?.webOrder?.isLegalEntity}\n" +
                 "ФИО: ${orderDetail?.webOrder?.fioCustomer}\n" +
@@ -158,13 +155,21 @@ object TGbot {
                 "Дата заказа: ${orderDetail?.webOrder?.docDate}\n" +
                 "Сумма: ${orderDetail?.webOrder?.docSum}\n" +
                 "Validate: ${orderDetail?.validate?.validate}\n" +
-                "Message: ${orderDetail?.validate?.message}\n" +
+                "Message: ${orderDetail?.validate?.message}" +
                 orderDetail?.items?.joinToString { item ->
-                    "НН: ${item.goodCode}\n" +
+                    "\nНН: ${item.goodCode}\n" +
                             "Наименование: ${item.name}\n" +
                             "Цена: ${item.amount}\n" +
                             "ШК: ${item.barCode}\n" +
-                            "Ссылка: ${item.eshopUrl}"
+                            "Ссылка: ${item.eshopUrl}\n" +
+                            (if (item.incomplet == null) {
+                                "Этот товар собран\n"
+                            } else {
+                                "ЭТОТ ТОВАР НЕ СОБРАН!\n" +
+                                        "${item.incomplet!!.name}\n" +
+                                        "Код: ${item.incomplet!!.reasonCode}\n" +
+                                        "Комментарий магазина: ${item.incomplet!!.comments}\n"
+                            })
                 }
 
     suspend fun botSendMessage(webOrder: WebOrder?): Long? {

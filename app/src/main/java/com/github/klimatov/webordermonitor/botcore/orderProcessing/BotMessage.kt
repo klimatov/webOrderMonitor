@@ -26,7 +26,7 @@ class BotMessage {
             regularln("#️⃣${webOrder?.webNum}/${webOrder?.orderId}")
             regular("${webOrder?.ordType} ")
             if (webOrder?.isLegalEntity == "Y") bold("СЧЁТ КОНТРАГЕНТА")
-            underlineln("\n\uD83D\uDCC6${DateTimeProcess().replaceDateTime(webOrder?.docDate?:"")}")
+            underlineln("\n\uD83D\uDCC6${DateTimeProcess().replaceDateTime(webOrder?.docDate ?: "")}")
             regularln("${if (webOrder?.paid == "Y") "\uD83D\uDCB0Онлайн оплата" else "\uD83E\uDDFEНе оплачен"} \uD83D\uDCB5${webOrder?.docSum} руб.")
             regular("\uD83D\uDC68${webOrder?.fioCustomer} ")
             phone("+${webOrder?.phone}")
@@ -123,5 +123,30 @@ class BotMessage {
 
     fun popupMessage(): String {
         return "Сегодня упало ${orderEnding(TGbot.dayConfirmedCount)}"
+    }
+
+    fun statusCodeResolve(docStatus: String?): String {
+        if (docStatus == null) return ""
+        return when (docStatus) {
+            "DOC_STORN" -> "Заказ отменен клиентом"
+            "PWRQT_SHRT" -> "Заказ изменен, требуется подтверждение клиента (УС)"
+            "WRQST_WAIT" -> "Заказ изменен, требуется подтверждение клиента (ЛС)"
+            "PWRQT_DLVR" -> "Заказ доставляется (УС)"
+            "PWRQT_PRCH" -> "Заказ выдан клиенту (УС)"
+            "WRQST_RCVD" -> "Заказ выдан клиенту (ЛС)"
+            "DWRQT_PRCH" -> "Заказ выдан клиенту (Д)"
+            "PWRQT_RCVD" -> "Заказ ППО получен в магазине по документу отпуска"
+            "WRQST_BNLY" -> "Выставлен безнал (ЛС)-Оплачен"
+            "WRQST_BNLN" -> "Выставлен безнал (ЛС)"
+            "WRQST_SHPD" -> "Товар по веб-заявке отгружен"
+            "PWRQT_PMNT" -> "Ожидается предоплата"
+            "PWRQT_DLVD" -> "Заказ подготовлен к выдаче (УС)"
+            "WRQST_ACPT" -> "Заказ подготовлен к выдаче (ЛС)"
+            "PWRQT_CRTD" -> "Заказ передан на исполнение (УС)"
+            "WRQST_CRTD" -> "Заказ передан на исполнение (ЛС)"
+            "DWRQT_CRTD" -> "Заказ передан на исполнение (Д)"
+            "ZEXPIRED" -> "Заказ отменен. Истек срок хранения товара"
+            else -> ""
+        }
     }
 }

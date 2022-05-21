@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private val mainScope = CoroutineScope(Dispatchers.IO).launch {
+    private val mainScope = CoroutineScope(Dispatchers.Default).launch {
         TGbot.botDaemonStart()
         OrderDaemon.orderDaemonStart(binding, sharedPreferences)
     }

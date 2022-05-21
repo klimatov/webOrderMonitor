@@ -60,7 +60,7 @@ object OrderDaemon {
             Log.i("webOrderMonitor", "sharedPreferences dayConfirmedCount READ: $dayConfirmedCount")
         }
 
-        val scope = CoroutineScope(Dispatchers.IO)
+        val scope = CoroutineScope(Dispatchers.Default)
 
         scope.launch {
             login()
