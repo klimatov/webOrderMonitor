@@ -23,27 +23,23 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-//        setContentView(R.layout.activity_main)
 
         mainScope.start()
 
         binding.exitButton.setOnClickListener {
             mainScope.cancel()
-            OrderDaemon.scope.cancel()
-            TGbot.scope.cancel()
-
+            OrderDaemon.job.cancel()
+            TGbot.job.cancel()
             finishAndRemoveTask()
             exitProcess(0)
         }
 
         binding.relogButton.setOnClickListener {
-            mainScope.cancel()
-            OrderDaemon.scope.cancel()
-            TGbot.scope.cancel()
+            OrderDaemon.cancelCoroutine()
+            TGbot.cancelCoroutine()
 
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(intent)
-
             finishAfterTransition()
         }
     }
@@ -57,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         Log.d("webOrderMonitor", "onDestroy")
         mainScope.cancel()
-        OrderDaemon.scope.cancel()
-        TGbot.scope.cancel()
+        OrderDaemon.cancelCoroutine()
+        TGbot.cancelCoroutine()
     }
 }

@@ -24,7 +24,12 @@ object OrderDaemon {
     val appStartTime: LocalDateTime = LocalDateTime.now()
     var loginTime: LocalDateTime = LocalDateTime.now()
 
-    val scope = CoroutineScope(Dispatchers.Default)
+    val job = SupervisorJob()
+    val scope = CoroutineScope(Dispatchers.Default + job)
+
+    fun cancelCoroutine() {
+        scope.coroutineContext.cancelChildren()
+    }
 
     suspend fun orderDaemonStart(
         binding: ActivityMainBinding,

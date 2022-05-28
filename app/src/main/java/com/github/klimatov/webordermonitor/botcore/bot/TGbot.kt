@@ -18,6 +18,8 @@ import dev.inmo.tgbotapi.types.MessageEntity.textsources.bold
 import dev.inmo.tgbotapi.types.MessageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import orderProcessing.BotMessage
 import orderProcessing.OrderDaemon
 import orderProcessing.data.ListWebOrder
@@ -33,11 +35,14 @@ object TGbot {
     var msgNotification = msgConvert.shopInWork()
     var dayConfirmedCount: Int = 0  //подтверждено за день
 
-    val scope = CoroutineScope(Dispatchers.Default)
+    val job = SupervisorJob()
+    val scope = CoroutineScope(Dispatchers.Default + job)
+
+    fun cancelCoroutine() {
+        scope.coroutineContext.cancelChildren()
+    }
 
     suspend fun botDaemonStart() {
-
-
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
                 val serverT = DateTimeProcess.dateDiff(OrderDaemon.appStartTime)
