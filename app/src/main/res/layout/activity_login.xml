@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/ts_user_shop_hint"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:maxLength="4"
         android:minHeight="48dp"
         android:textAlignment="textStart"
