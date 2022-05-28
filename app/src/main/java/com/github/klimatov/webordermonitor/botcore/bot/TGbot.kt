@@ -39,7 +39,7 @@ object TGbot {
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {
                 val serverT = DateTimeProcess.dateDiff(OrderDaemon.appStartTime)
-                val loginT = DateTimeProcess.dateDiff(OrderDaemon.appStartTime)
+                val loginT = DateTimeProcess.dateDiff(OrderDaemon.loginTime)
                 sendTextMessage(
                     it.chat,
                     "Bot online\n" +
