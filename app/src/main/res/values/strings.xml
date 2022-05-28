@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">webOrderMonitor</string>
+    <string name="ts_user_name">Имя пользователя TS</string>
+    <string name="ts_user_password">Пароль TS</string>
+    <string name="ts_user_shop">SAP-код магазина</string>
+    <string name="ts_user_shop_hint">A***</string>
+    <string name="bot_token">Токен вашего бота</string>
+    <string name="bot_chat_id">ID вашего чата</string>
+    <string name="startButton">Запустить</string>
+    <string name="exitButton">Выход</string>
+    <string name="user_data_error">Не верно указаны данные!</string>
+    <string name="user_data_ok">Проверка прошла успешно</string>
+    <string name="check_button">Проверить</string>
 </resources>

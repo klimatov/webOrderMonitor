@@ -42,7 +42,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mainScope.cancel()
         Log.d("webOrderMonitor", "onDestroy")
+        mainScope.cancel()
+        finishAndRemoveTask()
+        exitProcess(0)
     }
 }

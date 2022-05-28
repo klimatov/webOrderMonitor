@@ -9,7 +9,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.i("webOrderMonitor", "ACTION_BOOT_COMPLETED is recived and app is launched ")
-            val autoStartIntent = Intent(context, MainActivity::class.java)
+            val autoStartIntent = Intent(context, LoginActivity::class.java)
             autoStartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(autoStartIntent)
         }

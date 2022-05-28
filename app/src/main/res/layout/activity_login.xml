@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="25dp"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/textViewLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ts_user_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/tsUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ts_user_name"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLogin"
+        tools:layout_editor_absoluteX="25dp" />
+
+    <TextView
+        android:id="@+id/textViewPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ts_user_password"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tsUser" />
+
+    <EditText
+        android:id="@+id/tsPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ts_user_password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPassword"
+        tools:layout_editor_absoluteX="25dp" />
+
+    <TextView
+        android:id="@+id/textViewShop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ts_user_shop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tsPassword" />
+
+    <EditText
+        android:id="@+id/tsShop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ts_user_shop_hint"
+        android:inputType="textPassword"
+        android:maxLength="4"
+        android:minHeight="48dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShop"
+        tools:layout_editor_absoluteX="25dp" />
+
+    <TextView
+        android:id="@+id/tsCheckStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintTop_toBottomOf="@id/tsShop"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <Button
+        android:id="@+id/tsCheckButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tsShop"
+        app:layout_constraintBottom_toTopOf="@id/textViewBotToken"/>
+
+    <TextView
+        android:id="@+id/textViewBotToken"
+        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bot_token"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton"/>
+
+    <EditText
+        android:id="@+id/tgBotToken"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/bot_token"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBotToken"
+        tools:layout_editor_absoluteX="25dp" />
+
+    <TextView
+        android:id="@+id/textViewChatId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bot_chat_id"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgBotToken"/>
+
+    <EditText
+        android:id="@+id/tgChatId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/bot_chat_id"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/textViewChatId"
+        tools:layout_editor_absoluteX="25dp" />
+    <Button
+        android:id="@+id/tgCheckButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgChatId" />
+
+    <TextView
+        android:id="@+id/tgCheckStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintTop_toBottomOf="@id/tgChatId"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/startButton"
+        android:minWidth="130dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/exitButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgCheckButton" />
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exitButton"
+        android:minWidth="130dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startButton"
+        app:layout_constraintTop_toBottomOf="@id/tgCheckButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
