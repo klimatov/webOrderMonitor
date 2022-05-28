@@ -33,8 +33,10 @@ object TGbot {
     var msgNotification = msgConvert.shopInWork()
     var dayConfirmedCount: Int = 0  //подтверждено за день
 
+    val scope = CoroutineScope(Dispatchers.Default)
+
     suspend fun botDaemonStart() {
-        val scope = CoroutineScope(Dispatchers.Default)
+
 
         bot.buildBehaviourWithLongPolling(scope) {
             onCommand("status") {

@@ -24,6 +24,8 @@ object OrderDaemon {
     val appStartTime: LocalDateTime = LocalDateTime.now()
     var loginTime: LocalDateTime = LocalDateTime.now()
 
+    val scope = CoroutineScope(Dispatchers.Default)
+
     suspend fun orderDaemonStart(
         binding: ActivityMainBinding,
         sharedPreferences: SharedPreferences
@@ -60,11 +62,11 @@ object OrderDaemon {
             Log.i("webOrderMonitor", "sharedPreferences dayConfirmedCount READ: $dayConfirmedCount")
         }
 
-        val scope = CoroutineScope(Dispatchers.Default)
+
 
         scope.launch {
             login()
-            while (true) {  // основной цикл проверки
+            while (isActive) {  // основной цикл проверки
                 withContext(Dispatchers.Main) {
                     binding.textProcess.text = "Обновляем данные..."
                 }
