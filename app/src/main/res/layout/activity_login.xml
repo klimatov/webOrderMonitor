@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="25dp"
+    android:padding="20dp"
     tools:context=".LoginActivity">
 
     <TextView
@@ -24,7 +24,7 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@+id/textViewLogin"
-        tools:layout_editor_absoluteX="25dp" />
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/textViewPassword"
@@ -43,7 +43,7 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@+id/textViewPassword"
-        tools:layout_editor_absoluteX="25dp" />
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/textViewShop"
@@ -63,16 +63,15 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@+id/textViewShop"
-        tools:layout_editor_absoluteX="25dp" />
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/tsCheckStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        app:layout_constraintTop_toBottomOf="@id/tsShop"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tsShop" />
 
     <Button
         android:id="@+id/tsCheckButton"
@@ -80,17 +79,100 @@
         android:layout_height="wrap_content"
         android:text="@string/check_button"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tsShop"
-        app:layout_constraintBottom_toTopOf="@id/textViewBotToken"/>
+        app:layout_constraintTop_toBottomOf="@id/tsShop" />
+
+
+    <TextView
+        android:id="@+id/textViewShopWorking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_working_from"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+
+    <Button
+        android:id="@+id/buttonOpenDec"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/arrow_left"
+        app:layout_constraintStart_toEndOf="@+id/textViewShopWorking"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+    <TextView
+        android:id="@+id/shopOpening"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="10"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@+id/buttonOpenDec"
+        app:layout_constraintTop_toBottomOf="@+id/tsCheckButton" />
+
+    <Button
+        android:id="@+id/buttonOpenInc"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/arrow_left"
+        android:rotation="180"
+        app:layout_constraintStart_toEndOf="@+id/shopOpening"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+    <TextView
+        android:id="@+id/textViewShopWorkingTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/shop_working_to"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@+id/buttonOpenInc"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+
+
+    <Button
+        android:id="@+id/buttonCloseDec"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/arrow_left"
+        app:layout_constraintStart_toEndOf="@+id/textViewShopWorkingTo"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+    <TextView
+        android:id="@+id/shopClosing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="21"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@+id/buttonCloseDec"
+        app:layout_constraintTop_toBottomOf="@+id/tsCheckButton" />
+
+    <Button
+        android:id="@+id/buttonCloseInc"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/arrow_left"
+        android:rotation="180"
+        app:layout_constraintStart_toEndOf="@+id/shopClosing"
+        app:layout_constraintTop_toBottomOf="@id/tsCheckButton" />
+
+
 
     <TextView
         android:id="@+id/textViewBotToken"
-        android:layout_marginTop="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/bot_token"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tsCheckButton"/>
+        app:layout_constraintTop_toBottomOf="@id/textViewShopWorking" />
 
     <EditText
         android:id="@+id/tgBotToken"
@@ -101,7 +183,7 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@+id/textViewBotToken"
-        tools:layout_editor_absoluteX="25dp" />
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/textViewChatId"
@@ -109,7 +191,7 @@
         android:layout_height="wrap_content"
         android:text="@string/bot_chat_id"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tgBotToken"/>
+        app:layout_constraintTop_toBottomOf="@id/tgBotToken" />
 
     <EditText
         android:id="@+id/tgChatId"
@@ -120,7 +202,8 @@
         android:minHeight="48dp"
         android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@+id/textViewChatId"
-        tools:layout_editor_absoluteX="25dp" />
+        tools:layout_editor_absoluteX="20dp" />
+
     <Button
         android:id="@+id/tgCheckButton"
         android:layout_width="wrap_content"
@@ -134,30 +217,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        app:layout_constraintTop_toBottomOf="@id/tgChatId"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tgChatId" />
+
+    <CheckBox
+        android:id="@+id/autoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/auto_login_checkbox"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgCheckButton" />
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/startButton"
         android:minWidth="130dp"
+        android:text="@string/startButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/exitButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tgCheckButton" />
+        app:layout_constraintTop_toBottomOf="@id/autoLogin" />
 
     <Button
         android:id="@+id/exitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/exitButton"
         android:minWidth="130dp"
+        android:text="@string/exitButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/startButton"
-        app:layout_constraintTop_toBottomOf="@id/tgCheckButton" />
+        app:layout_constraintTop_toBottomOf="@id/autoLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

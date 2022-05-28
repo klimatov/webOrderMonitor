@@ -11,4 +11,7 @@
     <string name="user_data_error">Не верно указаны данные!</string>
     <string name="user_data_ok">Проверка прошла успешно</string>
     <string name="check_button">Проверить</string>
+    <string name="auto_login_checkbox">Автоматически входить при запуске</string>
+    <string name="shop_working_from">Магазин открыт с\u0020\u0020</string>
+    <string name="shop_working_to">\u0020\u0020до\u0020\u0020</string>
 </resources>

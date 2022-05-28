@@ -29,6 +29,22 @@ class LoginActivity : AppCompatActivity() {
 
         binding.tgCheckButton.setOnClickListener { doCheckTg() }
 
+        binding.buttonOpenDec.setOnClickListener {
+            binding.shopOpening.text = hourDec(binding.shopOpening.text.toString().toInt()).toString()
+        }
+
+        binding.buttonOpenInc.setOnClickListener {
+            binding.shopOpening.text = hourInc(binding.shopOpening.text.toString().toInt()).toString()
+        }
+
+        binding.buttonCloseDec.setOnClickListener {
+            binding.shopClosing.text = hourDec(binding.shopClosing.text.toString().toInt()).toString()
+        }
+
+        binding.buttonCloseInc.setOnClickListener {
+            binding.shopClosing.text = hourInc(binding.shopClosing.text.toString().toInt()).toString()
+        }
+
         binding.exitButton.setOnClickListener {
             finishAndRemoveTask()
             exitProcess(0)
@@ -46,6 +62,11 @@ class LoginActivity : AppCompatActivity() {
             } else Toast.makeText(this, "Некорректные данные", Toast.LENGTH_LONG).show()
         }
     }
+
+    private fun hourDec(hour: Int): Int = if (hour - 1 < 0) hour else hour - 1
+
+    private fun hourInc(hour: Int): Int = if (hour + 1 > 23) hour else hour + 1
+
 
     private fun doCheckTg(): Boolean {
         val botToken = binding.tgBotToken.text.toString()
